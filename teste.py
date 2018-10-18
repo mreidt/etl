@@ -3,7 +3,7 @@ import requests
 from sqlalchemy import create_engine
 from pandas.io import sql
 
-data = pd.read_csv('data_points_20180101.txt', delimiter=':|  Bearing:', names=['tipo', 'valores', 'bearing'], header=None)
+data = pd.read_csv('data_points.tar.gz', compression='gzip', delimiter=':|  Bearing:', names=['tipo', 'valores', 'bearing'], header=None)
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyCeWfCykKZLpMrg83oDcRoto_Aw4mHsyZM'
 columns = ['LATITUDE', 'LONGITUDE', 'RUA', 'NUMERO', 'BAIRRO', 'CIDADE', 'CEP', 'ESTADO', 'PAIS', 'LATITUDEGRAUS', 'LONGITUDEGRAUS', 'DISTANCIA', 'BEARING']
