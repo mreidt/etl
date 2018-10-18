@@ -3,10 +3,12 @@ import requests
 from sqlalchemy import create_engine
 from pandas.io import sql
 
-data = pd.read_csv('data_points.tar.gz', compression='gzip', delimiter=':|  Bearing:', names=['tipo', 'valores', 'bearing'], header=None)
+data = pd.read_csv('data_points_20180101.txt', delimiter=':|  Bearing:', names=['tipo', 'valores', 'bearing'], header=None)
 
 GOOGLE_MAPS_API_KEY = 'AIzaSyCeWfCykKZLpMrg83oDcRoto_Aw4mHsyZM'
 columns = ['LATITUDE', 'LONGITUDE', 'RUA', 'NUMERO', 'BAIRRO', 'CIDADE', 'CEP', 'ESTADO', 'PAIS', 'LATITUDEGRAUS', 'LONGITUDEGRAUS', 'DISTANCIA', 'BEARING']
+db_user = 'root'
+db_password = '*Gm299002'
 
 def address_resolver(json, dataFrame):
     final = {}
@@ -77,8 +79,8 @@ print('\n')
 print(df)
 
 engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}"
-                       .format(user="root",
-                               pw="root",
+                       .format(user=db_user,
+                               pw=db_password,
                                db="ETLDB"))
 # df['rua'],df['numero'],df['bairro'],df['cidade'],df['estado'],df['cep'],df['pais'] = busca_endereco(lat, lon)
 df.to_sql(con=engine, name='ENDERECOS', if_exists='append', index=False)
