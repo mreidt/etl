@@ -1,8 +1,12 @@
-from etl import etl_process
+from etl import etlProcess
 from decouple import config, Csv
 
+
 def main():
-    etl_process(sources=config('INPUT_FILES', cast=Csv()))
+    print('Starting ETL process')
+    etlProcess(sources=config('INPUT_FILES', cast=Csv()))
+    print('Ended ETL process')
+
 
 if __name__ == "__main__":
     main()

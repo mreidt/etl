@@ -10,23 +10,43 @@ from exceptions import NotAType, NoInputFiles
 
 logger = get_logger('logger')
 
+
 def extract(source):
     if os.path.isfile(source):
         if fileType(source) == config('TAR_GZ_EXTENSION'):
-            return pd.read_csv(source, delimiter=delimiter, compression='gzip',
-                               names=input_columns, header=None
-                              )
+            return pd.read_csv(
+                source,
+                delimiter=delimiter,
+                compression='gzip',
+                names=input_columns,
+                header=None,
+                engine='python')
         elif fileType(source) == config('TXT_EXTENSION'):
-            return pd.read_csv(source, delimiter=delimiter, names=input_columns,
-                               header=None
-                              )
+            return pd.read_csv(
+                source,
+                delimiter=delimiter,
+                names=input_columns,
+                header=None,
+                engine='python')
         else:
-            raise NotAType('{extension} is not a valid extension!'.format(extension=fileType(source)))
+            raise NotAType(
+                '{extension} is not a valid extension!'.format(
+                    extension=fileType(source)))
     else:
-        raise FileNotFoundError('File {filename} not found!'.format(filename=source))
+        raise FileNotFoundError(
+            'File {filename} not found!'.format(
+                filename=source))
+
 
 def transform(data):
-    data = data.join(data['valores'].str.split('   ', 1, expand=True).rename(columns={0:'graus', 1:'decimal'}))
+    data = data.join(
+        data['valores'].str.split(
+            '   ',
+            1,
+            expand=True).rename(
+            columns={
+                0: 'graus',
+                1: 'decimal'}))
     latitudes = data[data['tipo'].str.contains('Latitude')]
     longitudes = data[data['tipo'].str.contains('Longitude')]
     distances = data[data['tipo'].str.contains('Distance')]
@@ -45,6 +65,7 @@ def transform(data):
     df.apply(lambda coordenada: busca_endereco(coordenada), axis=1)
     return df
 
+
 def load(data):
     engine = create_engine("mysql+pymysql://{user}:{pw}@{host}/{db}"
                            .format(user=config('SQL_USER', default='root'),
@@ -55,10 +76,12 @@ def load(data):
                 if_exists=config('IF_EXISTS', default='append'),
                 index=config('SAVE_INDEX', default=False, cast=bool))
 
+
 def etlProcess(sources):
     try:
         if len(sources) == 0:
-            raise NoInputFiles('Please, edit the .env file and provide some input files.')
+            raise NoInputFiles(
+                'Please, edit the .env file and provide some input files.')
     except TypeError:
         raise TypeError(TypeError)
 
